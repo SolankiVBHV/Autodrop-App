@@ -1,0 +1,8 @@
+streamlit>=1.28.0
+pandas>=2.0.0
+numpy>=1.24.0
+plotly>=5.13.0
+psycopg2-binary>=2.9.0
+python-dotenv>=1.0.0
+streamlit-mermaid>=0.1.0
+yt-dlp>=2024.12.23

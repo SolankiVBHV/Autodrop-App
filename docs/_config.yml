@@ -1,0 +1,26 @@
+# Jekyll configuration for GitHub Pages
+
+title: Autodrop Documentation
+description: Documentation for the Autodrop Application
+baseurl: /Autodrop-App
+url: https://github.com/SolankiVBHV/Autodrop-App
+
+# Build settings
+theme: jekyll-theme-minimal
+plugins:
+  - jekyll-feed
+
+# Markdown settings
+markdown: kramdown
+highlighter: rouge
+
+# Exclude files from the build
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - node_modules
+  - vendor/bundle
+  - vendor/cache
+  - vendor/gems
+  - vendor/ruby
