@@ -5,12 +5,17 @@ Videos Page - Top Shorts from Channels
 from __future__ import annotations
 
 import os
+import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, List
 
 import streamlit as st
 import yt_dlp
 from dotenv import dotenv_values
+
+# Import config loader for Streamlit secrets + .env support
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config_loader import get_channel_links
 
 st.set_page_config(
     page_title="Videos",
@@ -33,19 +38,6 @@ st.markdown("""
 st.title("🎬 Channel Shorts")
 
 st.markdown("---")
-
-
-def _load_channel_links() -> Dict[str, str]:
-    env_file_values = dotenv_values(".env")
-    env_runtime = {k: v for k, v in os.environ.items() if k.endswith("_CHANNEL")}
-
-    merged = {**env_file_values, **env_runtime}
-    channels = {}
-    for key, value in merged.items():
-        if key and key.endswith("_CHANNEL") and value:
-            name = key.replace("_CHANNEL", "").replace("_", " ").title()
-            channels[name] = value.strip()
-    return dict(sorted(channels.items(), key=lambda x: x[0]))
 
 
 @st.cache_data(ttl=3600)
@@ -80,7 +72,7 @@ def _fetch_shorts(channel_url: str, max_entries: int = 20) -> List[Dict[str, str
     return videos
 
 
-channels = _load_channel_links()
+channels = get_channel_links()
 
 if not channels:
     st.warning("No *_CHANNEL entries found in .env or environment variables.")

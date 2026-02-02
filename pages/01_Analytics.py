@@ -3,6 +3,8 @@ Analytics Dashboard - Metrics and visualizations for Autodrop
 """
 
 import os
+# Import config loader for Streamlit secrets + .env support
+import sys
 from datetime import datetime, timedelta
 
 import pandas as pd
@@ -13,6 +15,9 @@ import streamlit as st
 from dotenv import load_dotenv
 from psycopg2.extras import RealDictCursor
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config_loader import get_db_config
+
 load_dotenv()
 
 st.set_page_config(page_title="Analytics", page_icon="📊", layout="wide")
@@ -22,12 +27,13 @@ def fetch_metric_data(query: str):
     """Fetch data with caching (1 hour TTL)"""
     conn = None
     try:
+        db_config = get_db_config()
         conn = psycopg2.connect(
-            host=os.getenv("CLOUD_HOST"),
-            port=int(os.getenv("CLOUD_DB_PORT", 5432)),
-            database=os.getenv("CLOUD_DATABASE_NAME"),
-            user=os.getenv("CLOUD_READONLY_USER"),
-            password=os.getenv("CLOUD_READONLY_DB_PASSWORD")
+            host=db_config["host"],
+            port=db_config["port"],
+            database=db_config["database"],
+            user=db_config["user"],
+            password=db_config["password"]
         )
         
         with conn.cursor(cursor_factory=RealDictCursor) as cur:

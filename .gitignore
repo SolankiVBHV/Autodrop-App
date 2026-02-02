@@ -144,6 +144,10 @@ ENV/
 env.bak/
 venv.bak/
 
+# Streamlit secrets (NEVER commit)
+.streamlit/secrets.toml
+.streamlit/secrets.*.toml
+
 # Spyder project settings
 .spyderproject
 .spyproject
