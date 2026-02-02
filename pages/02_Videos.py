@@ -36,7 +36,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.title("🎬 Channel Shorts")
-
+st.markdown("""_If you are visiting the page for the first time, it make take some time to load all videos..._""")
 st.markdown("---")
 
 
