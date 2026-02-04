@@ -69,6 +69,7 @@ def get_date_range(period: str) -> tuple:
 
 # Title
 st.title("Analytics Dashboard")
+st.markdown("""_If you are visiting the page for the first time, it make take some time to load all metrics..._""")
 st.markdown("---")
 
 # Sidebar - Time range selector
