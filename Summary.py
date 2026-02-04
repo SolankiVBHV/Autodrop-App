@@ -16,9 +16,9 @@ st.set_page_config(
 st.title("🎯 Autodrop Dashboard")
 
 st.markdown("""
-Welcome to **Autodrop** - Your automated video generation and distribution platform.
+Welcome to **Autodrop** - A video generator that converts NEWS to YouTube Shorts.
 
-This dashboard provides comprehensive insights into your video generation pipeline, from content ingestion to distribution across multiple channels.
+This dashboard provides comprehensive insights into Autodrop, a video generation pipeline, from content ingestion to distribution across multiple channels.
 """)
 
 st.markdown("---")
