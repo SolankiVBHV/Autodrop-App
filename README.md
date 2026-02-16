@@ -1,7 +1,8 @@
 # Autodrop-App
-Public Dashboard + Documentation for AutoDrop(A tool that automates E2E Video Generation + Upload)
+AutoDrop is a multi-stage pipeline that converts news articles into short-form videos(Shorts) and publishes them across 6 independent YouTube channels. The system uses local GPU processing for speed and cost control, and a cloud database for analytics and monitoring.
+This repo is the public documentation and metrics for Autodrop. 
 
-Streamlit app: https://autodrop-app.streamlit.app/
+App: https://autodrop-app.streamlit.app/
 
 ---
 

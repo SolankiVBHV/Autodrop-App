@@ -2,13 +2,13 @@
 
 ## Overview
 
-AutoDrop is a multi-stage pipeline that converts news articles into short-form videos and publishes them across 6 independent channels. The system uses local GPU processing for speed and cost control, and a cloud database for analytics and monitoring.
+AutoDrop is a multi-stage pipeline that converts news articles into short-form videos(Shorts) and publishes them across 6 independent YouTube channels. The system uses local GPU processing for speed and cost control, and a cloud database for analytics and monitoring.
 
 Key characteristics:
 - Multi-provider LLM rotation for quota-aware script generation
 - Three-tier TTS fallback to avoid capacity bottlenecks
 - GPU-accelerated video assembly with object-aware cropping
-- Streamlit review workflow before upload
+- Optional Review workflow before upload
 
 ## System Architecture
 
@@ -111,7 +111,7 @@ graph TB
 6. Channel routing
    - Category, geography, and sentiment drive channel assignment.
 7. Review and approval
-   - Streamlit UI for preview, approve/reject, and channel override.
+   - Separate Web UI for preview, approve/reject, and channel override.
 
 ## Post-Approval Pipeline
 
@@ -146,16 +146,8 @@ graph TB
 - Semantic deduplication saves compute across the pipeline.
 - Audio-visual alignment improves viewer retention.
 - Hybrid local/cloud storage balances speed and observability.
-      timezone: "Asia/Kolkata"
-      
-    - name: "Weekly Metrics Push"
-      trigger: cron
-      day_of_week: "mon"
-      hour: 6
-      minute: 0
 
 
-**Job Persistence**: SQLite-backed job store survives service restarts
 
 **Error Handling**: Failed jobs log to Telegram notifications
 
@@ -187,91 +179,6 @@ graph TB
 
 ---
 
-## Database Schema Highlights
-
-### Core Tables
-```
-news
-  ├─ id (PK)
-  ├─ title, description, content
-  ├─ url, url_hash (UNIQUE)
-  ├─ published_at, country, category
-  └─ raw_json (metadata)
-
-article_summaries
-  ├─ id (PK)
-  ├─ article_id (FK)
-  ├─ target_channel
-  ├─ hook, main_summary, call_to_action
-  ├─ tts_script, visual_script
-  ├─ engagement_style, target_duration
-  ├─ ai_model, api_provider, generation_cost
-  └─ created_at, updated_at
-
-audio_transcripts
-  ├─ id (PK)
-  ├─ summary_id (FK)
-  ├─ article_id (FK)
-  ├─ audio_file_path
-  ├─ duration, character_count
-  ├─ tts_provider, tts_cost
-  └─ created_at
-
-video_generations
-  ├─ id (PK)
-  ├─ article_id (FK)
-  ├─ visual_keywords JSONB (["stock market", "crash", ...])
-  ├─ images_used JSONB ([{url, resolution, usage_count}])
-  ├─ video_file_path, duration, resolution
-  ├─ sentiment_score, background_music
-  ├─ generation_status, generation_time_seconds
-  └─ created_at
-
-video_uploads
-  ├─ id (PK)
-  ├─ video_generation_id (FK)
-  ├─ channel_id (FK)
-  ├─ youtube_video_id
-  ├─ upload_status, upload_time
-  ├─ metrics (views, likes, comments)
-  └─ created_at, updated_at
-
-channels
-  ├─ id (PK)
-  ├─ channel_name, display_name
-  ├─ target_country, category, audience_type
-  ├─ oauth_token (encrypted)
-  ├─ platform (YouTube)
-  ├─ routing_rules JSONB
-  └─ is_active
-```
-
-### Tracking & Optimization Tables
-```
-character_tracking
-  ├─ id (PK)
-  ├─ provider (Kokoro, Coqui, Azure)
-  ├─ character_count, cost
-  ├─ month_year
-  └─ created_at
-
-api_usage_logs
-  ├─ id (PK)
-  ├─ provider, api_key
-  ├─ request_count, cost_usd
-  ├─ quota_remaining
-  ├─ date
-  └─ created_at
-
-asset_library
-  ├─ id (PK)
-  ├─ image_hash, image_url
-  ├─ usage_count, last_used_at
-  ├─ visual_keywords
-  └─ created_at
-```
-
----
 
 ## Performance Optimizations & Lessons Learned
 
@@ -317,7 +224,6 @@ asset_library
 1. **API Key Management**: All keys in `.env`, encrypted in database
 2. **OAuth Tokens**: Secure token storage, auto-refresh before expiry
 3. **Image Copyright**: Preference for CC-licensed images, watermarking
-4. **Local Processing**: News content never leaves local VM until upload
 5. **Cloud DB Access**: Read-only accounts for analytics dashboard
 
 ---
@@ -357,10 +263,6 @@ asset_library
 - Docker containerization for easy deployment
 - Systemd services for scheduler background execution
 
-**Development Environment**:
-- Same stack with smaller GPU or CPU-only mode
-- Pytest test suite (95+ tests)
-- Mock APIs for testing without rate limits
 
 ---
 
